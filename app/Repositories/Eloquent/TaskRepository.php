@@ -37,4 +37,16 @@ class TaskRepository implements TaskRepositoryInterface
     {
         return Task::destroy($id);
     }
+
+    public function updateStatus(int $id, string $status)
+    {
+        $task = Task::findOrFail($id);
+
+        $task->update([
+            'status' => $status
+        ]);
+
+        return $task;
+    }
+
 }
