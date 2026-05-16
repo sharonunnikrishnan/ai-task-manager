@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-use App\Models\User;
-
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
-
+use App\Models\Task;
+use App\Models\User;
 use App\Repositories\Contracts\TaskRepositoryInterface;
-
+use App\Services\AIService;
 use App\Services\TaskService;
 
 class TaskController extends Controller
@@ -80,20 +78,31 @@ class TaskController extends Controller
     /**
      * Update task
      */
-    public function update(
-        UpdateTaskRequest $request,
-        Task $task
-    ) {
+    public function update(UpdateTaskRequest $request,Task $task)
+    {
         $this->authorize('update', $task);
 
-        $this->repo->update(
+        // Update task
+        $updatedTask = $this->repo->update(
             $task->id,
             $request->validated()
         );
 
+        // Regenerate AI
+        $aiData = app(AIService::class)
+            ->generateSummary($updatedTask);
+
+        $this->repo->update(
+            $task->id,
+            $aiData
+        );
+
         return redirect()
-            ->route('tasks.index')
-            ->with('success', 'Task updated successfully.');
+            ->route('tasks.show', $task->id)
+            ->with(
+                'success',
+                'Task updated and AI regenerated successfully.'
+            );
     }
 
     /**

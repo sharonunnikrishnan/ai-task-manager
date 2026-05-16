@@ -4,22 +4,25 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\TaskApiController;
 
-Route::get('/tasks', [
-    TaskApiController::class,
-    'index'
-]);
+// Route::middleware('auth:sanctum')->group(function () {
 
-Route::post('/tasks', [
-    TaskApiController::class,
-    'store'
-]);
+    Route::get('/tasks', [
+        TaskApiController::class,
+        'index'
+    ]);
 
-Route::patch('/tasks/{id}/status', [
-    TaskApiController::class,
-    'updateStatus'
-]);
+    Route::post('/tasks', [
+        TaskApiController::class,
+        'store'
+    ]);
 
-Route::get('/tasks/{id}/ai-summary', [
-    TaskApiController::class,
-    'aiSummary'
-]);
+    Route::patch('/tasks/{id}/status', [
+        TaskApiController::class,
+        'updateStatus'
+    ]);
+
+    Route::get('/tasks/{id}/ai-summary', [
+        TaskApiController::class,
+        'aiSummary'
+    ]);
+// });

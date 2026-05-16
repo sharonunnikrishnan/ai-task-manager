@@ -1,58 +1,446 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AI Assisted Task Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based AI Assisted Task Management System built as part of a machine test.
 
-## About Laravel
+The application allows users to create, manage, and track tasks with AI-generated summaries (Mocked AI responses are used for stability and demonstration purposes) and priority analysis.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Backend
 
-## Learning Laravel
+* Laravel 13
+* PHP 8.3
+* MySQL
+* Repository Pattern
+* Service Layer Architecture
+* REST API
+* Laravel Policies
+* Laravel Breeze Authentication
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Frontend
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Blade Templates
+* Tailwind CSS
+* Chart.js
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## AI Integration
 
-## Agentic Development
+* Dedicated AIService layer
+* Mocked AI response implementation
+* Architecture prepared for OpenAI/Gemini/Claude integration
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+# Features
 
-php artisan boost:install
+## Authentication
+
+* User Registration
+* User Login
+* User Logout
+* Protected Routes
+
+---
+
+## Task Management
+
+* Create Task
+* Edit Task
+* Delete Task
+* View Task Details
+* Task Status Management
+* Task Assignment
+
+---
+
+## AI Features (Mocked AI responses used for stability and demonstration purposes)
+
+* AI-generated task summary
+* AI-generated priority analysis
+* AI insights section in task detail page
+* AI processing simulation during task creation
+
+---
+
+## Dashboard
+
+* Total Tasks
+* Pending Tasks
+* Completed Tasks
+* High Priority Tasks
+* Recent Tasks Table
+* Task Analytics Chart using Chart.js
+
+---
+
+## Authorization
+
+### Admin
+
+* Full access to all tasks
+* Can edit any task
+* Can delete any task
+
+### User
+
+* Can view assigned tasks only
+* Can edit assigned tasks only
+* Cannot delete other users' tasks
+
+Authorization implemented using Laravel Policies.
+
+---
+
+## API Endpoints
+
+| Method | Endpoint                   | Description        |
+| ------ | -------------------------- | ------------------ |
+| GET    | /api/tasks                 | Get all tasks      |
+| POST   | /api/tasks                 | Create new task    |
+| PATCH  | /api/tasks/{id}/status     | Update task status |
+| GET    | /api/tasks/{id}/ai-summary | Get AI summary     |
+
+---
+
+# Project Architecture
+
+The application follows clean architecture principles.
+
+## Architecture Flow
+
+```text
+Controller
+→ Service Layer
+→ Repository Layer
+→ Database
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+AI processing is separated into a dedicated AIService.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Folder Structure
 
-## Code of Conduct
+```text
+app/
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+│   └── Resources/
+│
+├── Models/
+│
+├── Policies/
+│
+├── Repositories/
+│   ├── Contracts/
+│   └── Eloquent/
+│
+├── Services/
+│
+resources/views/
+├── dashboard.blade.php
+└── tasks/
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+# Repository Pattern
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Repository Pattern is used to separate database logic from controllers.
 
-## License
+Example:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```text
+TaskRepositoryInterface
+TaskRepository
+```
+
+Benefits:
+
+* Cleaner controllers
+* Better maintainability
+* Easier testing
+* Better separation of concerns
+
+---
+
+# Service Layer
+
+Business logic is handled inside service classes.
+
+Example:
+
+```text
+TaskService
+AIService
+```
+
+Responsibilities:
+
+* Task creation workflow
+* AI processing
+* Transaction handling
+* Business rules
+
+---
+
+# AI Integration
+
+The application includes a dedicated AIService responsible for generating:
+
+* AI Summary
+* AI Priority
+
+Currently, mocked AI responses are used for stability and demonstration purposes.
+
+The architecture is designed in a way that real OpenAI/Gemini/Claude integration can be enabled easily without changing controller or business logic.
+
+Example future implementation:
+
+```php
+$client = OpenAI::client(env('OPENAI_API_KEY'));
+```
+
+---
+
+# Database Tables
+
+## users
+
+* id
+* name
+* email
+* password
+* role
+
+## tasks
+
+* id
+* title
+* description
+* priority
+* status
+* due_date
+* assigned_to
+* ai_summary
+* ai_priority
+* timestamps
+
+---
+
+# Installation Steps
+
+## 1. Clone Project
+
+```bash
+git clone project-url
+```
+
+---
+
+## 2. Move Into Project
+
+```bash
+cd ai-task-manager
+```
+
+---
+
+## 3. Install Dependencies
+
+```bash
+composer install
+```
+
+```bash
+npm install
+```
+
+---
+
+## 4. Create Environment File
+
+```bash
+cp .env.example .env
+```
+
+---
+
+## 5. Configure Database
+
+Update `.env`
+
+```env
+DB_DATABASE=ai_task_manager
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## 6. Generate App Key
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## 7. Run Migrations
+
+```bash
+php artisan migrate
+```
+
+---
+
+## 8. Seed Database
+
+```bash
+php artisan db:seed
+```
+
+---
+
+## 9. Run Frontend
+
+```bash
+npm run dev
+```
+
+---
+
+## 10. Run Application
+
+```bash
+php artisan serve
+```
+
+Application URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+# Default Users
+
+## Admin User
+
+```text
+Email: admin@example.com
+Password: password
+```
+
+---
+
+## Normal User
+
+```text
+Email: user@example.com
+Password: password
+```
+
+---
+
+# API Testing
+
+APIs can be tested using:
+
+* Postman
+* Thunder Client
+
+Example:
+
+```text
+GET /api/tasks
+```
+
+---
+
+# Validation
+
+Validation is implemented using Laravel Form Requests.
+
+Example:
+
+```text
+StoreTaskRequest
+UpdateTaskRequest
+```
+
+---
+
+# Policies
+
+Task access is protected using Laravel Policies.
+
+Implemented permissions:
+
+* view
+* update
+* delete
+
+Unauthorized access returns 403 responses.
+
+---
+
+# UI Design
+
+The frontend is built using:
+
+* Blade
+* Tailwind CSS
+* Responsive layouts
+* Dashboard cards
+* Status badges
+* AI insight panels
+
+---
+
+# Key Highlights
+
+* Clean Architecture
+* Thin Controllers
+* Repository Pattern
+* Service Layer
+* AI Integration Layer
+* REST APIs
+* Role-based Authorization
+* Responsive Dashboard
+* Modern Tailwind UI
+
+---
+
+# Future Improvements
+
+Possible future enhancements:
+
+* Real OpenAI Integration
+* Notifications
+* Task Comments
+* File Uploads
+* Team Management
+* Activity Logs
+* Email Alerts
+* Queue Jobs
+* Real-time Updates
+
+---
+
+# Conclusion
+
+This project was developed focusing on:
+
+* Clean Laravel architecture
+* Maintainability
+* Scalability
+* Separation of concerns
+* User experience
+* AI-assisted workflow
+
+The application demonstrates how AI features can be integrated into a modern Laravel task management system while maintaining clean and scalable code architecture. 

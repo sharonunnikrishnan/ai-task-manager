@@ -126,26 +126,38 @@
 
                                 <td class="px-6 py-4 flex gap-2">
 
-                                    <a href="{{ route('tasks.show', $task->id) }}"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
-                                        View
-                                    </a>
+                                    @can('view', $task)
+                                        <a href="{{ route('tasks.show', $task->id) }}"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
 
-                                    <a href="{{ route('tasks.edit', $task->id) }}"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
-                                        Edit
-                                    </a>
+                                            View
 
-                                    <form method="POST" action="{{ route('tasks.destroy', $task->id) }}">
+                                        </a>
+                                    @endcan
 
-                                        @csrf
-                                        @method('DELETE')
+                                    @can('update', $task)
+                                        <a href="{{ route('tasks.edit', $task->id) }}"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
 
-                                        <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded">
-                                            Delete
-                                        </button>
+                                            Edit
 
-                                    </form>
+                                        </a>
+                                    @endcan
+
+                                    @can('delete', $task)
+                                        <form method="POST" action="{{ route('tasks.destroy', $task->id) }}">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded">
+
+                                                Delete
+
+                                            </button>
+
+                                        </form>
+                                    @endcan
 
                                 </td>
 

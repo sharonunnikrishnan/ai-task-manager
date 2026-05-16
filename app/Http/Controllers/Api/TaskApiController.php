@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\StoreTaskRequest;
 
 use App\Http\Resources\TaskResource;
@@ -42,7 +43,7 @@ class TaskApiController extends Controller
 
             'message' => 'Task created successfully',
 
-            'data' => $task
+            'data' => new TaskResource($task)
 
         ], 201);
     }
@@ -57,14 +58,14 @@ class TaskApiController extends Controller
             'status' => 'required|in:pending,in_progress,completed'
         ]);
 
-        $task = $this->repo
+        $updatedTask = $this->repo
             ->updateStatus($id, $request->status);
 
         return response()->json([
 
             'message' => 'Task status updated',
 
-            'data' => new TaskResource($task)
+            'data' => new TaskResource($updatedTask)
 
         ], 200);
     }
