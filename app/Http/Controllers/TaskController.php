@@ -22,9 +22,54 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = $this->repo->all();
+        $query = Task::query();
 
-        return view('tasks.index', compact('tasks'));
+        // Search
+        if (request('search')) {
+
+            $query->where(function ($q) {
+
+                $q->where(
+                    'title',
+                    'like',
+                    '%' . request('search') . '%'
+                )
+
+                ->orWhere(
+                    'description',
+                    'like',
+                    '%' . request('search') . '%'
+                );
+            });
+        }
+
+        // Status Filter
+        if (request('status')) {
+
+            $query->where(
+                'status',
+                request('status')
+            );
+        }
+
+        // Priority Filter
+        if (request('priority')) {
+
+            $query->where(
+                'priority',
+                request('priority')
+            );
+        }
+
+        $tasks = $query
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+        return view(
+            'tasks.index',
+            compact('tasks')
+        );
     }
 
     /**

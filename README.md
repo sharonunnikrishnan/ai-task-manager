@@ -22,14 +22,13 @@ The application allows users to create, manage, and track tasks with AI-generate
 ## Frontend
 
 * Blade Templates
-* Tailwind CSS
-* Chart.js
+* Tailwind CSS 
 
 ## AI Integration
 
 * Dedicated AIService layer
 * Mocked AI response implementation
-* Architecture prepared for OpenAI/Gemini/Claude integration
+* Architecture prepared for OpenAI integration
 
 ---
 
@@ -196,7 +195,7 @@ The application includes a dedicated AIService responsible for generating:
 
 Currently, mocked AI responses are used for stability and demonstration purposes.
 
-The architecture is designed in a way that real OpenAI/Gemini/Claude integration can be enabled easily without changing controller or business logic.
+The architecture is designed in a way that real OpenAI integration can be enabled easily without changing controller or business logic.
 
 Example future implementation:
 
@@ -235,7 +234,7 @@ $client = OpenAI::client(env('OPENAI_API_KEY'));
 
 ## 1. Clone Project
 
-```bash
+```
 git clone project-url
 ```
 
@@ -243,7 +242,7 @@ git clone project-url
 
 ## 2. Move Into Project
 
-```bash
+```
 cd ai-task-manager
 ```
 
@@ -251,11 +250,11 @@ cd ai-task-manager
 
 ## 3. Install Dependencies
 
-```bash
+```
 composer install
 ```
 
-```bash
+```
 npm install
 ```
 
@@ -263,7 +262,7 @@ npm install
 
 ## 4. Create Environment File
 
-```bash
+```
 cp .env.example .env
 ```
 
@@ -283,7 +282,7 @@ DB_PASSWORD=
 
 ## 6. Generate App Key
 
-```bash
+```
 php artisan key:generate
 ```
 
@@ -291,7 +290,7 @@ php artisan key:generate
 
 ## 7. Run Migrations
 
-```bash
+```
 php artisan migrate
 ```
 
@@ -299,7 +298,7 @@ php artisan migrate
 
 ## 8. Seed Database
 
-```bash
+```
 php artisan db:seed
 ```
 
@@ -307,7 +306,7 @@ php artisan db:seed
 
 ## 9. Run Frontend
 
-```bash
+```
 npm run dev
 ```
 
@@ -315,7 +314,7 @@ npm run dev
 
 ## 10. Run Application
 
-```bash
+```
 php artisan serve
 ```
 
@@ -332,8 +331,8 @@ http://127.0.0.1:8000
 ## Admin User
 
 ```text
-Email: admin@example.com
-Password: password
+Email: admin@gmail.com
+Password: admin@123
 ```
 
 ---
@@ -341,8 +340,8 @@ Password: password
 ## Normal User
 
 ```text
-Email: user@example.com
-Password: password
+Email: user@gmail.com
+Password: user@123
 ```
 
 ---
@@ -359,88 +358,6 @@ Example:
 ```text
 GET /api/tasks
 ```
-
----
-
-# Validation
-
-Validation is implemented using Laravel Form Requests.
-
-Example:
-
-```text
-StoreTaskRequest
-UpdateTaskRequest
-```
-
----
-
-# Policies
-
-Task access is protected using Laravel Policies.
-
-Implemented permissions:
-
-* view
-* update
-* delete
-
-Unauthorized access returns 403 responses.
-
----
-
-# UI Design
-
-The frontend is built using:
-
-* Blade
-* Tailwind CSS
-* Responsive layouts
-* Dashboard cards
-* Status badges
-* AI insight panels
-
----
-
-# Key Highlights
-
-* Clean Architecture
-* Thin Controllers
-* Repository Pattern
-* Service Layer
-* AI Integration Layer
-* REST APIs
-* Role-based Authorization
-* Responsive Dashboard
-* Modern Tailwind UI
-
----
-
-# Future Improvements
-
-Possible future enhancements:
-
-* Real OpenAI Integration
-* Notifications
-* Task Comments
-* File Uploads
-* Team Management
-* Activity Logs
-* Email Alerts
-* Queue Jobs
-* Real-time Updates
-
----
-
-# Conclusion
-
-This project was developed focusing on:
-
-* Clean Laravel architecture
-* Maintainability
-* Scalability
-* Separation of concerns
-* User experience
-* AI-assisted workflow
+   
 
 The application demonstrates how AI features can be integrated into a modern Laravel task management system while maintaining clean and scalable code architecture. 

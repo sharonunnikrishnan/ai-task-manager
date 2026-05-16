@@ -4,289 +4,332 @@
 
 <x-app-layout>
 
-    <div class="py-8">
+    <div class="min-h-screen bg-[#3a4152] py-6">
 
         <div class="max-w-7xl mx-auto px-4">
 
             <!-- Header -->
-            <div class="mb-8">
+            <div class="flex items-center justify-between mb-8">
 
-                <h1 class="text-3xl font-bold text-gray-800">
-                    Dashboard
-                </h1>
+                <div>
 
-                <p class="text-gray-500 mt-1">
-                    AI Assisted Task Management Overview
-                </p>
+                    <h1 class="text-5xl font-bold text-white">
+                        Task List
+                    </h1>
+
+                </div>
+
+                <a href="{{ route('tasks.create') }}"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold shadow">
+
+                    + New Task
+
+                </a>
 
             </div>
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <!-- Filters -->
+            <form method="GET" action="{{ route('dashboard') }}" class="flex flex-wrap gap-3 mb-8">
 
-                <!-- Total Tasks -->
-                <div class="bg-white rounded-2xl shadow p-6">
+                <!-- Search -->
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Filter Task"
+                    class="bg-white rounded-lg px-4 py-3 w-64 border-0">
 
-                    <div class="flex items-center justify-between">
+                <!-- Status -->
+                <select name="status" class="bg-white rounded-lg px-4 py-3 border-0">
 
-                        <div>
+                    <option value="">Status</option>
 
-                            <p class="text-gray-500 text-sm">
-                                Total Tasks
-                            </p>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
 
-                            <h2 class="text-4xl font-bold text-gray-800 mt-2">
-                                {{ $totalTasks }}
-                            </h2>
+                        Pending
 
-                        </div>
+                    </option>
 
-                        <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl">
-                            📋
-                        </div>
+                    <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>
+
+                        In Progress
+
+                    </option>
+
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
+
+                        Completed
+
+                    </option>
+
+                </select>
+
+                <!-- Priority -->
+                <select name="priority" class="bg-white rounded-lg px-4 py-3 border-0">
+
+                    <option value="">Priority</option>
+
+                    <option value="low" {{ request('priority') == 'low' ? 'selected' : '' }}>
+
+                        Low
+
+                    </option>
+
+                    <option value="medium" {{ request('priority') == 'medium' ? 'selected' : '' }}>
+
+                        Medium
+
+                    </option>
+
+                    <option value="high" {{ request('priority') == 'high' ? 'selected' : '' }}>
+
+                        High
+
+                    </option>
+
+                </select>
+
+                <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-lg">
+
+                    Filter
+
+                </button>
+
+            </form>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                <!-- Left Content -->
+                <div class="lg:col-span-3">
+
+                    <!-- Task Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        @forelse($tasks as $task)
+                            <div class="bg-white rounded-2xl p-5 shadow-lg">
+
+                                <!-- Top -->
+                                <div class="flex items-center justify-between mb-5">
+
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
+
+                                        {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+
+                                    </span>
+
+                                    <div class="text-gray-400">
+                                        •••
+                                    </div>
+
+                                </div>
+
+                                <!-- Title -->
+                                <h2 class="text-xl font-bold text-gray-800 mb-4">
+
+                                    {{ $task->title }}
+
+                                </h2>
+
+                                <!-- Tags -->
+                                <div class="flex gap-2 mb-4">
+
+                                    @if ($task->priority == 'high')
+                                        <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">
+                                            Priority High
+                                        </span>
+                                    @elseif($task->priority == 'medium')
+                                        <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full">
+                                            Priority Medium
+                                        </span>
+                                    @else
+                                        <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                                            Priority Low
+                                        </span>
+                                    @endif
+
+                                </div>
+
+                                <!-- Description -->
+                                <div class="bg-gray-50 rounded-xl p-4 mb-4">
+
+                                    <p class="text-sm text-gray-500 leading-6">
+
+                                        {{ Str::limit($task->description, 90) }}
+
+                                    </p>
+
+                                </div>
+
+                                <!-- Details -->
+                                <div class="space-y-1 text-sm text-gray-500 mb-5">
+
+                                    <p>
+                                        Due: {{ $task->due_date }}
+                                    </p>
+
+                                    <p>
+                                        AI Priority:
+                                        <span class="font-semibold text-gray-700">
+                                            {{ ucfirst($task->ai_priority) }}
+                                        </span>
+                                    </p>
+
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="flex items-center justify-end gap-2">
+
+                                    @can('update', $task)
+                                        <a href="{{ route('tasks.edit', $task->id) }}"
+                                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm">
+
+                                            Edit
+
+                                        </a>
+                                    @endcan
+
+                                    @can('view', $task)
+                                        <a href="{{ route('tasks.show', $task->id) }}"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+
+                                            View
+
+                                        </a>
+                                    @endcan
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="text-white">
+
+                                No tasks found
+
+                            </div>
+                        @endforelse
 
                     </div>
 
                 </div>
 
-                <!-- Pending Tasks -->
-                <div class="bg-white rounded-2xl shadow p-6">
+                <!-- Sidebar -->
+                <div class="space-y-6">
 
-                    <div class="flex items-center justify-between">
+                    <!-- Profile Card -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg">
 
-                        <div>
+                        <div class="flex items-center gap-4 mb-6">
 
-                            <p class="text-gray-500 text-sm">
-                                Pending Tasks
-                            </p>
+                            <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-2xl">
 
-                            <h2 class="text-4xl font-bold text-yellow-600 mt-2">
-                                {{ $pendingTasks }}
-                            </h2>
+                                👨‍💻
 
-                        </div>
+                            </div>
 
-                        <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center text-2xl">
-                            ⏳
-                        </div>
+                            <div>
 
-                    </div>
+                                <h3 class="font-bold text-lg">
+                                    {{ auth()->user()->name }}
+                                </h3>
 
-                </div>
+                                <p class="text-sm text-gray-500">
+                                    {{ ucfirst(auth()->user()->role) }}
+                                </p>
 
-                <!-- Completed -->
-                <div class="bg-white rounded-2xl shadow p-6">
-
-                    <div class="flex items-center justify-between">
-
-                        <div>
-
-                            <p class="text-gray-500 text-sm">
-                                Completed Tasks
-                            </p>
-
-                            <h2 class="text-4xl font-bold text-green-600 mt-2">
-                                {{ $completedTasks }}
-                            </h2>
+                            </div>
 
                         </div>
 
-                        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-2xl">
-                            ✅
-                        </div>
+                        <!-- Menu -->
+                        <div class="space-y-3">
 
-                    </div>
+                            <div class="bg-blue-500 text-white px-4 py-3 rounded-xl">
+                                Tasks
+                            </div>
 
-                </div>
+                            <div class="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl">
+                                Dashboard
+                            </div>
 
-                <!-- High Priority -->
-                <div class="bg-white rounded-2xl shadow p-6">
+                            <!-- Buttons -->
+                            <div class="flex gap-3">
 
-                    <div class="flex items-center justify-between">
+                                <!-- Create Task -->
+                                <a href="{{ route('tasks.create') }}"
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl shadow transition">
 
-                        <div>
+                                    + Create Task
 
-                            <p class="text-gray-500 text-sm">
-                                High Priority
-                            </p>
+                                </a>
 
-                            <h2 class="text-4xl font-bold text-red-600 mt-2">
-                                {{ $highPriorityTasks }}
-                            </h2>
+                                <!-- Show All Tasks -->
+                                <a href="{{ route('tasks.index') }}"
+                                    class="bg-gray-900 hover:bg-black text-white px-5 py-3 rounded-xl shadow transition">
 
-                        </div>
+                                    Show All Tasks
 
-                        <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center text-2xl">
-                            🔥
+                                </a>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
+                    <!-- Stats -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg">
 
-            </div>
+                        <h3 class="font-bold text-gray-800 mb-5">
+                            Monthly Task Completion
+                        </h3>
 
-            <!-- Analytics Chart -->
-            <div class="mt-10">
+                        <div class="grid grid-cols-3 gap-3 mb-6">
 
-                <div class="bg-white rounded-2xl shadow p-6">
+                            <div class="text-center">
 
-                    <div class="mb-6">
+                                <div class="text-2xl font-bold text-indigo-600">
+                                    {{ $totalTasks }}
+                                </div>
 
-                        <h2 class="text-2xl font-bold text-gray-800">
-                            Task Analytics
-                        </h2>
+                                <div class="text-xs text-gray-500">
+                                    Total
+                                </div>
 
-                        <p class="text-gray-500 mt-1">
-                            Overview of task statistics
-                        </p>
+                            </div>
+
+                            <div class="text-center">
+
+                                <div class="text-2xl font-bold text-green-600">
+                                    {{ $completedTasks }}
+                                </div>
+
+                                <div class="text-xs text-gray-500">
+                                    Completed
+                                </div>
+
+                            </div>
+
+                            <div class="text-center">
+
+                                <div class="text-2xl font-bold text-red-600">
+                                    {{ $highPriorityTasks }}
+                                </div>
+
+                                <div class="text-xs text-gray-500">
+                                    High
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Chart -->
+                        <div class="h-64">
+
+                            <canvas id="taskChart"></canvas>
+
+                        </div>
 
                     </div>
-
-                    <!-- Chart -->
-                    <div class="h-96">
-
-                        <canvas id="taskChart"></canvas>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Recent Tasks -->
-            <div class="mt-10">
-
-                <div class="flex items-center justify-between mb-5">
-
-                    <div>
-
-                        <h2 class="text-2xl font-bold text-gray-800">
-                            Recent Tasks
-                        </h2>
-
-                        <p class="text-gray-500">
-                            Latest created tasks
-                        </p>
-
-                    </div>
-
-                    <a href="{{ route('tasks.index') }}"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-lg shadow">
-
-                        View All Tasks
-
-                    </a>
-
-                </div>
-
-                <div class="bg-white rounded-2xl shadow overflow-hidden">
-
-                    <table class="w-full">
-
-                        <thead class="bg-gray-100">
-
-                            <tr>
-
-                                <th class="text-left px-6 py-4">
-                                    Title
-                                </th>
-
-                                <th class="text-left px-6 py-4">
-                                    Priority
-                                </th>
-
-                                <th class="text-left px-6 py-4">
-                                    Status
-                                </th>
-
-                                <th class="text-left px-6 py-4">
-                                    Due Date
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            @forelse($recentTasks as $task)
-                                <tr class="border-b hover:bg-gray-50">
-
-                                    <td class="px-6 py-4">
-
-                                        <div class="font-semibold text-gray-800">
-                                            {{ $task->title }}
-                                        </div>
-
-                                        <div class="text-sm text-gray-500">
-                                            {{ Str::limit($task->description, 50) }}
-                                        </div>
-
-                                    </td>
-
-                                    <!-- Priority -->
-                                    <td class="px-6 py-4">
-
-                                        @if ($task->priority == 'high')
-                                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                                                High
-                                            </span>
-                                        @elseif($task->priority == 'medium')
-                                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
-                                                Medium
-                                            </span>
-                                        @else
-                                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                                                Low
-                                            </span>
-                                        @endif
-
-                                    </td>
-
-                                    <!-- Status -->
-                                    <td class="px-6 py-4">
-
-                                        @if ($task->status == 'completed')
-                                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                                                Completed
-                                            </span>
-                                        @elseif($task->status == 'in_progress')
-                                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                                                In Progress
-                                            </span>
-                                        @else
-                                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                                                Pending
-                                            </span>
-                                        @endif
-
-                                    </td>
-
-                                    <td class="px-6 py-4 text-gray-700">
-
-                                        {{ $task->due_date }}
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-
-                                    <td colspan="4" class="text-center py-10 text-gray-500">
-
-                                        No recent tasks found
-
-                                    </td>
-
-                                </tr>
-                            @endforelse
-
-                        </tbody>
-
-                    </table>
 
                 </div>
 
@@ -310,15 +353,13 @@
         data: {
 
             labels: [
-                'Total Tasks',
+                'Total',
                 'Pending',
                 'Completed',
-                'High Priority'
+                'High'
             ],
 
             datasets: [{
-
-                label: 'Task Statistics',
 
                 data: [
 
@@ -334,13 +375,10 @@
 
                 backgroundColor: [
 
-                    'rgba(99, 102, 241, 0.7)',
-
-                    'rgba(234, 179, 8, 0.7)',
-
-                    'rgba(34, 197, 94, 0.7)',
-
-                    'rgba(239, 68, 68, 0.7)'
+                    '#6366F1',
+                    '#FACC15',
+                    '#22C55E',
+                    '#EF4444'
                 ],
 
                 borderRadius: 10

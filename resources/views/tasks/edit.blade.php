@@ -1,261 +1,445 @@
 <x-app-layout>
 
-    <div class="py-8">
+    <div class="min-h-screen bg-[#3a4152] py-8">
 
-        <div class="max-w-4xl mx-auto px-4">
+        <div class="max-w-7xl mx-auto px-4">
 
-            <div class="bg-white rounded-2xl shadow p-8">
+            <!-- Header -->
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-10">
 
-                <!-- Header -->
-                <div class="flex items-center justify-between mb-8">
+                <div>
 
-                    <div>
+                    <h1 class="text-5xl font-bold text-white">
+                        Edit Task
+                    </h1>
 
-                        <h1 class="text-3xl font-bold text-gray-800">
-                            Edit Task
-                        </h1>
+                    <p class="text-slate-400 mt-3 text-lg">
+                        Update task details and AI analysis
+                    </p>
 
-                        <p class="text-gray-500 mt-1">
-                            Update task details and assignment
-                        </p>
+                </div>
 
-                    </div>
+                <!-- Button -->
+                <div>
 
-                    <a href="{{ route('tasks.index') }}"
-                        class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+                    <a href="{{ route('tasks.create') }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg transition">
 
-                        ← Back
+                        + New Task
 
                     </a>
 
                 </div>
 
-                <!-- Validation Errors -->
-                @if ($errors->any())
+            </div>
 
-                    <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <!-- Main Layout -->
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
 
-                        <ul class="list-disc pl-5">
+                <!-- Main Content -->
+                <div class="xl:col-span-3">
 
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                    <!-- Validation Errors -->
+                    @if ($errors->any())
 
-                        </ul>
+                        <div class="bg-red-500/20 border border-red-500/30 text-red-300 px-5 py-4 rounded-2xl mb-6">
 
-                    </div>
+                            <ul class="list-disc pl-5">
 
-                @endif
-
-                <!-- Form -->
-                <form method="POST" action="{{ route('tasks.update', $task->id) }}">
-
-                    @csrf
-                    @method('PUT')
-
-                    <!-- Title -->
-                    <div class="mb-5">
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Task Title
-                        </label>
-
-                        <input type="text" name="title" value="{{ old('title', $task->title) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-5">
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Description
-                        </label>
-
-                        <textarea name="description" rows="6"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('description', $task->description) }}</textarea>
-
-                    </div>
-
-                    <!-- Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                        <!-- Priority -->
-                        <div>
-
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Priority
-                            </label>
-
-                            <select name="priority"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                                <option value="low" {{ $task->priority == 'low' ? 'selected' : '' }}>
-                                    Low
-                                </option>
-
-                                <option value="medium" {{ $task->priority == 'medium' ? 'selected' : '' }}>
-                                    Medium
-                                </option>
-
-                                <option value="high" {{ $task->priority == 'high' ? 'selected' : '' }}>
-                                    High
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Status -->
-                        <div>
-
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Status
-                            </label>
-
-                            <select name="status"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                                <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>
-                                    Pending
-                                </option>
-
-                                <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>
-                                    In Progress
-                                </option>
-
-                                <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>
-                                    Completed
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Second Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-
-                        <!-- Due Date -->
-                        <div>
-
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Due Date
-                            </label>
-
-                            <input type="date" name="due_date" value="{{ old('due_date', $task->due_date) }}"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                        </div>
-
-                        <!-- Assigned User -->
-                        <div>
-
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Assigned User
-                            </label>
-
-                            <select name="assigned_to"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}"
-                                        {{ $task->assigned_to == $user->id ? 'selected' : '' }}>
-
-                                        {{ $user->name }}
-
-                                    </option>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
                                 @endforeach
 
-                            </select>
+                            </ul>
 
                         </div>
 
-                    </div>
+                    @endif
 
-                    <!-- AI Info Box -->
-                    <div class="mt-8 bg-indigo-50 border border-indigo-100 rounded-xl p-5">
+                    <!-- Main Card -->
+                    <div class="bg-white rounded-3xl shadow-2xl p-8">
 
-                        <div class="flex items-center gap-3 mb-3">
+                        <!-- Top -->
+                        <div class="flex items-start justify-between mb-8">
 
-                            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                🤖
+                            <h2 class="text-4xl font-bold text-gray-800 leading-snug">
+
+                                {{ $task->title }}
+
+                            </h2>
+
+                            <div class="text-gray-400 text-3xl">
+
+                                ⋯
+
                             </div>
 
-                            <div>
+                        </div>
 
-                                <h3 class="font-semibold text-indigo-700">
-                                    AI Generated Information
+                        <!-- Form -->
+                        <form method="POST" action="{{ route('tasks.update', $task->id) }}">
+
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Title -->
+                            <div class="bg-gray-50 rounded-3xl p-5 mb-6">
+
+                                <input type="text" name="title" value="{{ old('title', $task->title) }}"
+                                    placeholder="Task Title"
+                                    class="w-full bg-white border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500">
+
+                            </div>
+
+                            <!-- Description -->
+                            <div class="bg-gray-50 rounded-3xl p-5 mb-6">
+
+                                <textarea name="description" rows="5" placeholder="Task Description"
+                                    class="w-full bg-white border border-gray-200 rounded-2xl p-4 leading-7 focus:ring-2 focus:ring-blue-500">{{ old('description', $task->description) }}</textarea>
+
+                            </div>
+
+                            <!-- Priority Section -->
+                            <div class="bg-gray-50 rounded-3xl p-5 mb-6">
+
+                                <h3 class="text-xl font-bold text-gray-800 mb-5">
+
+                                    Priority
+
                                 </h3>
 
-                                <p class="text-sm text-indigo-500">
-                                    Auto generated task analysis
-                                </p>
+                                <div class="flex flex-wrap gap-3">
+
+                                    <label class="cursor-pointer">
+
+                                        <input type="radio" name="priority" value="low" class="hidden peer"
+                                            {{ $task->priority == 'low' ? 'checked' : '' }}>
+
+                                        <div
+                                            class="px-5 py-3 rounded-2xl border bg-white text-gray-700 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 transition">
+
+                                            Low
+
+                                        </div>
+
+                                    </label>
+
+                                    <label class="cursor-pointer">
+
+                                        <input type="radio" name="priority" value="medium" class="hidden peer"
+                                            {{ $task->priority == 'medium' ? 'checked' : '' }}>
+
+                                        <div
+                                            class="px-5 py-3 rounded-2xl border bg-white text-gray-700 peer-checked:bg-yellow-500 peer-checked:text-white peer-checked:border-yellow-500 transition">
+
+                                            Medium
+
+                                        </div>
+
+                                    </label>
+
+                                    <label class="cursor-pointer">
+
+                                        <input type="radio" name="priority" value="high" class="hidden peer"
+                                            {{ $task->priority == 'high' ? 'checked' : '' }}>
+
+                                        <div
+                                            class="px-5 py-3 rounded-2xl border bg-white text-gray-700 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+
+                                            High
+
+                                        </div>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                                <!-- Due Date -->
+                                <div class="bg-gray-50 rounded-3xl p-5">
+
+                                    <label class="block text-sm font-semibold text-gray-600 mb-3">
+
+                                        Due Date
+
+                                    </label>
+
+                                    <input type="date" name="due_date" value="{{ old('due_date', $task->due_date) }}"
+                                        class="w-full bg-white border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500">
+
+                                </div>
+
+                                <!-- Assigned User -->
+                                <div class="bg-gray-50 rounded-3xl p-5">
+
+                                    <label class="block text-sm font-semibold text-gray-600 mb-3">
+
+                                        Assign To
+
+                                    </label>
+
+                                    <select name="assigned_to"
+                                        class="w-full bg-white border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500">
+
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}"
+                                                {{ $task->assigned_to == $user->id ? 'selected' : '' }}>
+
+                                                {{ $user->name }}
+
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Status -->
+                            <div class="bg-gray-50 rounded-3xl p-5 mb-6">
+
+                                <label class="block text-sm font-semibold text-gray-600 mb-3">
+
+                                    Status
+
+                                </label>
+
+                                <select name="status"
+                                    class="w-full bg-white border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500">
+
+                                    <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>
+                                        Pending
+                                    </option>
+
+                                    <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>
+                                        In Progress
+                                    </option>
+
+                                    <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>
+                                        Completed
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- AI Summary -->
+                            <div class="bg-gray-50 rounded-3xl p-5 mb-8">
+
+                                <div class="flex items-center gap-3 mb-5">
+
+                                    <div
+                                        class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl">
+
+                                        🤖
+
+                                    </div>
+
+                                    <div>
+
+                                        <h3 class="text-2xl font-bold text-gray-800">
+
+                                            AI Generated Summary
+
+                                        </h3>
+
+                                        <p class="text-gray-500 text-sm">
+
+                                            AI powered task analysis
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="bg-white rounded-2xl p-5 border border-gray-100">
+
+                                    <p class="text-gray-700 leading-8">
+
+                                        {{ $task->ai_summary }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="flex flex-wrap gap-4">
+
+                                <button type="submit"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl shadow-lg font-semibold transition">
+
+                                    Save Changes
+
+                                </button>
+
+                                <a href="{{ route('tasks.index') }}"
+                                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition">
+
+                                    Cancel
+
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+
+                    <!-- User Card -->
+                    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+
+                        <div class="p-6">
+
+                            <div class="flex items-center gap-4">
+
+                                <div
+                                    class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+
+                                </div>
+
+                                <div>
+
+                                    <div class="font-bold text-gray-800">
+
+                                        {{ auth()->user()->name }}
+
+                                    </div>
+
+                                    <div class="text-gray-500 text-sm">
+
+                                        {{ auth()->user()->role }}
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Menu -->
+                        <div class="border-t">
 
-                            <div>
+                            <a href="{{ route('tasks.index') }}"
+                                class="block px-6 py-4 bg-blue-600 text-white font-medium">
 
-                                <div class="text-sm text-gray-500 mb-2">
-                                    AI Summary
-                                </div>
+                                Tasks
 
-                                <div class="bg-white rounded-lg p-4 text-gray-700 text-sm leading-6">
+                            </a>
 
-                                    {{ $task->ai_summary ?? 'No AI summary available.' }}
+                            <a href="{{ route('dashboard') }}"
+                                class="block px-6 py-4 hover:bg-blue-50 text-gray-700 font-medium">
 
-                                </div>
+                                Dashboard
 
-                            </div>
-
-                            <div>
-
-                                <div class="text-sm text-gray-500 mb-2">
-                                    AI Priority
-                                </div>
-
-                                <div class="inline-block bg-red-100 text-red-700 px-4 py-2 rounded-full">
-
-                                    {{ ucfirst($task->ai_priority ?? 'low') }}
-
-                                </div>
-
-                            </div>
+                            </a>
 
                         </div>
 
                     </div>
 
-                    <!-- Buttons -->
-                    <div class="mt-8 flex items-center gap-3">
+                    <!-- Chart -->
+                    <div class="bg-slate-800 rounded-3xl p-6 shadow-xl">
 
-                        <button type="submit"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg shadow">
+                        <h3 class="text-white text-xl font-bold mb-6">
 
-                            Update Task
+                            Monthly Task Completion
 
-                        </button>
+                        </h3>
 
-                        <a href="{{ route('tasks.index') }}"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg">
+                        <div class="h-64">
 
-                            Cancel
+                            <canvas id="miniChart"></canvas>
 
-                        </a>
+                        </div>
 
                     </div>
 
-                </form>
+                </div>
 
             </div>
 
         </div>
 
     </div>
+
+    <!-- Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('miniChart');
+
+        new Chart(ctx, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+
+                datasets: [{
+
+                    data: [12, 18, 10, 22, 15],
+
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#60A5FA',
+                        '#2563EB',
+                        '#1D4ED8',
+                        '#93C5FD'
+                    ],
+
+                    borderRadius: 10
+                }]
+            },
+
+            options: {
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#CBD5E1'
+                        },
+                        grid: {
+                            color: '#334155'
+                        }
+                    },
+
+                    x: {
+                        ticks: {
+                            color: '#CBD5E1'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 
 </x-app-layout>
